@@ -15,6 +15,7 @@
 		2F132CCB280B3656005DD9BE /* MemoryGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F132CCA280B3656005DD9BE /* MemoryGame.swift */; };
 		2F132CCD280B3737005DD9BE /* MemoryGameModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F132CCC280B3737005DD9BE /* MemoryGameModelView.swift */; };
 		2F132CCF280B3B64005DD9BE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F132CCE280B3B64005DD9BE /* CardView.swift */; };
+		2F5E1DED28106EB00021DF02 /* AspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		2F132CCA280B3656005DD9BE /* MemoryGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGame.swift; sourceTree = "<group>"; };
 		2F132CCC280B3737005DD9BE /* MemoryGameModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGameModelView.swift; sourceTree = "<group>"; };
 		2F132CCE280B3B64005DD9BE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectVGrid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,11 +64,12 @@
 				2F132CBA280A5FE4005DD9BE /* memorysquaresApp.swift */,
 				2F132CBC280A5FE4005DD9BE /* ContentView.swift */,
 				2F132CC8280B35D5005DD9BE /* Card.swift */,
-				2F132CBE280A5FE7005DD9BE /* Assets.xcassets */,
-				2F132CC0280A5FE7005DD9BE /* Preview Content */,
 				2F132CCA280B3656005DD9BE /* MemoryGame.swift */,
 				2F132CCC280B3737005DD9BE /* MemoryGameModelView.swift */,
 				2F132CCE280B3B64005DD9BE /* CardView.swift */,
+				2F132CBE280A5FE7005DD9BE /* Assets.xcassets */,
+				2F132CC0280A5FE7005DD9BE /* Preview Content */,
+				2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */,
 			);
 			path = memorysquares;
 			sourceTree = "<group>";
@@ -151,6 +154,7 @@
 			files = (
 				2F132CBD280A5FE4005DD9BE /* ContentView.swift in Sources */,
 				2F132CC9280B35D6005DD9BE /* Card.swift in Sources */,
+				2F5E1DED28106EB00021DF02 /* AspectVGrid.swift in Sources */,
 				2F132CCB280B3656005DD9BE /* MemoryGame.swift in Sources */,
 				2F132CCD280B3737005DD9BE /* MemoryGameModelView.swift in Sources */,
 				2F132CCF280B3B64005DD9BE /* CardView.swift in Sources */,

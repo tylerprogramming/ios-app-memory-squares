@@ -10,10 +10,69 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject var modelView: MemoryGameModelView
     @State var showGameView = false
-    @State var gameRound: Int = 1
+    @State private var timerStart = 0.0
+    @State private var timerEnd = 4.0
+    @State private var showTimer: Bool = false
+    @State private var numberOfShakes: CGFloat = 0
     
-    // We can make the square's size a constant and use that
-    let squareSize: CGFloat = 100
+    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    
+    var body: some View {
+        NavigationView {
+            VStack {
+                if modelView.isGameOver {
+                    gameOverView
+                } else {
+                    gameRoundView
+                }
+                
+                VStack {
+                    AspectVGrid(items: modelView.cards, aspectRatio: 1, content: { card in
+                        cardView(for: card)
+                    })
+                }.onChange(of: modelView.readyForNextRound) { newValue in
+                    if modelView.checkDidWinRound {
+                        Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { (_) in
+                            withAnimation {
+                                modelView.restartGame()
+                            }
+                        }
+                    }
+                }
+
+                Spacer()
+                
+                if showTimer {
+                    ProgressView("", value: timerStart, total: 120)
+                        .scaleEffect(x: 1, y: 5, anchor: .bottom)
+                        .onReceive(timer) { _ in
+                            withAnimation(.easeInOut(duration: 2)) {
+                                if timerStart < 120 {
+                                    timerStart += 3
+                                } else {
+                                    showTimer = false
+                                }
+                            }
+                        }
+                        .padding()
+                }
+                
+                Spacer()
+                
+                livesView
+            }
+            .background(
+                LinearGradient(
+                    gradient: Gradient(colors: [.white, .blue.opacity(0.4)]),
+                    startPoint: UnitPoint(x: 0.2, y: 0.2),
+                    endPoint: .bottomTrailing
+            ))
+            .onAppear {
+                modelView.restartGame()
+            }
+        }
+        .ignoresSafeArea()
+    }
     
     var livesView: some View {
         HStack {
@@ -68,7 +127,16 @@ struct ContentView: View {
     }
     
     var gameRoundView: some View {
-        Text(!modelView.checkDidWinRound && !modelView.isGameOver ? "Round \(gameRound)" : "Game Over")
+        Text(!modelView.checkDidWinRound ? "Round \(modelView.round)" : "Good Job!")
+            .font(.largeTitle)
+            .fontWeight(.heavy)
+            .foregroundColor(!modelView.isGameOver ? .white : .red)
+            .minimumScaleFactor(0.5)
+            .shadow(radius: 5)
+    }
+    
+    var gameOverView: some View {
+        Text("Game Over")
             .font(.largeTitle)
             .fontWeight(.heavy)
             .foregroundColor(!modelView.isGameOver ? .white : .red)
@@ -76,88 +144,43 @@ struct ContentView: View {
             .shadow(radius: 5)
     }
       
-    var body: some View {
-        ZStack {
-            // the background color
-            LinearGradient(
-                gradient: Gradient(colors: [.white, .blue.opacity(0.4)]),
-                startPoint: UnitPoint(x: 0.2, y: 0.2),
-                endPoint: .bottomTrailing
-            )
-            
-            VStack {
-                gameRoundView
-                
-                // This will be our desired spacing we want for our grid
-                // If you want the grid to be truly square you can just set this to 'squareSize'
-                let spacingDesired: CGFloat = 10
- 
-                let columns = [
-                    GridItem(.fixed(squareSize), alignment: .center),
-                    GridItem(.fixed(squareSize), alignment: .center),
-                    GridItem(.fixed(squareSize), alignment: .center),
-                    GridItem(.fixed(squareSize), alignment: .center)
-                ]
-
-                if !modelView.checkDidWinRound && !modelView.isGameOver {
-                    // We then use the 'spacingDesired' in the grid
-                    LazyVGrid(columns: columns, alignment: .center, pinnedViews: [], content: {
-                      ForEach(modelView.cards) { card in
-                          if showGameView {
-                              CardView(card: card).onTapGesture {
-                                  self.modelView.choose(card: card)
-                              }
-                              .frame(width: 100, height: 100)
-                          } else {
-                              ChosenCardView(card: card)
-                                  .frame(width: 100, height: 100)
-                          }
-                      }
-                    })
-                    .padding(10)
+    @ViewBuilder
+    private func cardView(for card: Card) -> some View {
+        if !modelView.checkDidWinRound && !modelView.isGameOver {
+            if showGameView {
+                CardView(modelView: modelView, card: card)
+                    .padding(4)
+            } else {
+                ChosenCardView(card: card)
+                    .padding(4)
                     .onAppear {
-                        Timer.scheduledTimer(withTimeInterval: 3, repeats: false) { (_) in
+                        showTimer = true
+                        timerStart = 0.0
+                        Timer.scheduledTimer(withTimeInterval: timerEnd, repeats: false) { (_) in
                             withAnimation {
                                 self.showGameView = true
                             }
                         }
                     }
-                } else {
-                    // We then use the 'spacingDesired' in the grid
-                    LazyVGrid(columns: columns, alignment: .center, spacing: spacingDesired, pinnedViews: [], content: {
-                      ForEach(modelView.cards) { card in
-                          if showGameView {
-                              CardView(card: card).onTapGesture {
-                                  self.modelView.choose(card: card)
-                              }
-                              .frame(width: 100, height: 100)
-                          } else {
-                              ChosenCardView(card: card)
-                                  .frame(width: 100, height: 100)
-                          }
-                      }
-                    })
-                    .onAppear {
-                        Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { (_) in
-                            withAnimation {
-                                self.showGameView = false
-                                self.gameRound += 1
-                                modelView.restartGame()
-                            }
-                        }
+            }
+        } else if modelView.checkDidWinRound {
+            CardView(modelView: modelView, card: card)
+                .padding(4)
+            .onAppear {
+                Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { (_) in
+                    withAnimation {
+                        self.showGameView = false
+                        modelView.readyForNextRound = true
                     }
                 }
-                
-                livesView
             }
         }
-        .ignoresSafeArea()
     }
 }
 
 // Our preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(modelView: MemoryGameModelView())
+        ContentView(modelView: MemoryGameModelView(totalSquares: 9, totalChosenSquares: 4))
     }
 }
