@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import AVFoundation
 
 struct MemoryGame: View {
     var cards: [Card] = []
@@ -27,8 +28,6 @@ struct MemoryGame: View {
             } else {
                 cards.append(Card(id: index))
             }
-            
-            print(cards[index])
         }
     }
     
@@ -40,6 +39,7 @@ struct MemoryGame: View {
     // check if the game is over
     // then check if the card tapped by user is a chosen square
     // then check if the user has already tapped the chosen square to not count towards the game count
+    // changing cards should only happen here, and not directly change the cards array from struct
     mutating func chooseCard(card: Card) {
         if !isGameOver() {
             if let chosenIndex = cards.firstIndex(where: { cardInTheArray in cardInTheArray.id == card.id }), cards[chosenIndex].isChosen {
@@ -47,6 +47,9 @@ struct MemoryGame: View {
                     toggleCardMatch(card: card)
                     numberOfCardsChosen += 1
                     cards[chosenIndex].hasBeenChosenAndPressed = true
+                    
+                    // correct sound
+                    AudioServicesPlaySystemSound(1103)
                 }
             } else {
                 numberOfLives -= 1
@@ -54,8 +57,6 @@ struct MemoryGame: View {
         } else {
             print("Game is over.")
         }
-        
-        print(numberOfCardsChosen)
     }
     
     mutating func toggleCardMatch(card: Card) {
