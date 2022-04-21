@@ -6,6 +6,32 @@
 //
 
 import SwiftUI
+import AVFoundation
+
+class SoundManager {
+    static let instance = SoundManager()
+    
+    var player: AVAudioPlayer?
+    
+    enum SoundOption: String {
+        case wrongsquare
+        case roundwin
+        case countdown
+    }
+    
+    func playSound(sound: SoundOption) {
+        
+        guard let url = Bundle.main.url(forResource: sound.rawValue, withExtension: ".wav") else { return }
+        
+        do {
+            player = try AVAudioPlayer(contentsOf: url)
+            player?.volume = 0.1
+            player?.play()
+        } catch let error {
+            print("Error playing sound. \(error.localizedDescription)")
+        }
+    }
+}
 
 struct CardView: View {
     @ObservedObject var modelView: MemoryGameModelView
@@ -26,14 +52,22 @@ struct CardView: View {
 
                                 if !card.isChosen {
                                     numberOfShakes = 5
+                                    SoundManager.instance.playSound(sound: .wrongsquare)
                                 }
+                            }
+                            
+                            if modelView.checkDidWinRound {
+                                SoundManager.instance.playSound(sound: .roundwin)
                             }
 
                             numberOfShakes = 0
                         }
                         .modifier(ShakeEffect(shakeNumber: numberOfShakes))
                 } else {
+                    // make this happen when is matched but hadn't been pressed yet for just that square
                     shape.fill(.white)
+                    Circle().fill(.green)
+                        .modifier(ParticlesModifier())
                 }
             }
         }

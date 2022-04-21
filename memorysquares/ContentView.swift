@@ -13,7 +13,6 @@ struct ContentView: View {
     @State private var timerStart = 0.0
     @State private var timerEnd = 4.0
     @State private var showTimer: Bool = false
-    @State private var numberOfShakes: CGFloat = 0
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
@@ -53,6 +52,9 @@ struct ContentView: View {
                                     showTimer = false
                                 }
                             }
+                        }
+                        .onAppear {
+                            SoundManager.instance.playSound(sound: .countdown)
                         }
                         .padding()
                 }

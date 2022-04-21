@@ -49,7 +49,7 @@ struct MemoryGame: View {
                     cards[chosenIndex].hasBeenChosenAndPressed = true
                     
                     // correct sound
-                    AudioServicesPlaySystemSound(1103)
+                    
                 }
             } else {
                 numberOfLives -= 1

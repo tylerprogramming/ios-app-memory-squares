@@ -16,6 +16,11 @@
 		2F132CCD280B3737005DD9BE /* MemoryGameModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F132CCC280B3737005DD9BE /* MemoryGameModelView.swift */; };
 		2F132CCF280B3B64005DD9BE /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F132CCE280B3B64005DD9BE /* CardView.swift */; };
 		2F5E1DED28106EB00021DF02 /* AspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */; };
+		2FAB16A82811DA3800C29FC3 /* wrongsquare.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FAB16A72811DA3800C29FC3 /* wrongsquare.wav */; };
+		2FAB16AA2811DED200C29FC3 /* roundwin.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FAB16A92811DED200C29FC3 /* roundwin.wav */; };
+		2FAB16AD2811EF3F00C29FC3 /* FireworkParticlesGeometryEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FAB16AC2811EF3F00C29FC3 /* FireworkParticlesGeometryEffect.swift */; };
+		2FAB16B02811EF9200C29FC3 /* ParticlesModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FAB16AF2811EF9200C29FC3 /* ParticlesModifier.swift */; };
+		2FAB16B62811F91100C29FC3 /* countdown.wav in Resources */ = {isa = PBXBuildFile; fileRef = 2FAB16B52811F91100C29FC3 /* countdown.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +34,11 @@
 		2F132CCC280B3737005DD9BE /* MemoryGameModelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryGameModelView.swift; sourceTree = "<group>"; };
 		2F132CCE280B3B64005DD9BE /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectVGrid.swift; sourceTree = "<group>"; };
+		2FAB16A72811DA3800C29FC3 /* wrongsquare.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = wrongsquare.wav; path = "../../../../../XCode App Assets/interfaceanditemsounds/V1.0/Interface/wrongsquare.wav"; sourceTree = "<group>"; };
+		2FAB16A92811DED200C29FC3 /* roundwin.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = roundwin.wav; path = "../../../../../XCode App Assets/interfaceanditemsounds/V1.0/Items & Collectables/roundwin.wav"; sourceTree = "<group>"; };
+		2FAB16AC2811EF3F00C29FC3 /* FireworkParticlesGeometryEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireworkParticlesGeometryEffect.swift; sourceTree = "<group>"; };
+		2FAB16AF2811EF9200C29FC3 /* ParticlesModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticlesModifier.swift; sourceTree = "<group>"; };
+		2FAB16B52811F91100C29FC3 /* countdown.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = countdown.wav; path = "../../../../../XCode App Assets/countdown.wav"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,15 +71,18 @@
 		2F132CB9280A5FE4005DD9BE /* memorysquares */ = {
 			isa = PBXGroup;
 			children = (
+				2FAB16AE2811EF7B00C29FC3 /* Modifiers */,
+				2FAB16AB2811EF2500C29FC3 /* Effects */,
+				2FAB16A42811D83000C29FC3 /* Sounds */,
 				2F132CBA280A5FE4005DD9BE /* memorysquaresApp.swift */,
 				2F132CBC280A5FE4005DD9BE /* ContentView.swift */,
-				2F132CC8280B35D5005DD9BE /* Card.swift */,
 				2F132CCA280B3656005DD9BE /* MemoryGame.swift */,
 				2F132CCC280B3737005DD9BE /* MemoryGameModelView.swift */,
+				2F132CC8280B35D5005DD9BE /* Card.swift */,
 				2F132CCE280B3B64005DD9BE /* CardView.swift */,
+				2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */,
 				2F132CBE280A5FE7005DD9BE /* Assets.xcassets */,
 				2F132CC0280A5FE7005DD9BE /* Preview Content */,
-				2F5E1DEC28106EB00021DF02 /* AspectVGrid.swift */,
 			);
 			path = memorysquares;
 			sourceTree = "<group>";
@@ -80,6 +93,32 @@
 				2F132CC1280A5FE7005DD9BE /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		2FAB16A42811D83000C29FC3 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				2FAB16B52811F91100C29FC3 /* countdown.wav */,
+				2FAB16A92811DED200C29FC3 /* roundwin.wav */,
+				2FAB16A72811DA3800C29FC3 /* wrongsquare.wav */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		2FAB16AB2811EF2500C29FC3 /* Effects */ = {
+			isa = PBXGroup;
+			children = (
+				2FAB16AC2811EF3F00C29FC3 /* FireworkParticlesGeometryEffect.swift */,
+			);
+			path = Effects;
+			sourceTree = "<group>";
+		};
+		2FAB16AE2811EF7B00C29FC3 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				2FAB16AF2811EF9200C29FC3 /* ParticlesModifier.swift */,
+			);
+			path = Modifiers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -141,7 +180,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F132CC2280A5FE7005DD9BE /* Preview Assets.xcassets in Resources */,
+				2FAB16A82811DA3800C29FC3 /* wrongsquare.wav in Resources */,
+				2FAB16AA2811DED200C29FC3 /* roundwin.wav in Resources */,
 				2F132CBF280A5FE7005DD9BE /* Assets.xcassets in Resources */,
+				2FAB16B62811F91100C29FC3 /* countdown.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,7 +195,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F132CBD280A5FE4005DD9BE /* ContentView.swift in Sources */,
+				2FAB16AD2811EF3F00C29FC3 /* FireworkParticlesGeometryEffect.swift in Sources */,
 				2F132CC9280B35D6005DD9BE /* Card.swift in Sources */,
+				2FAB16B02811EF9200C29FC3 /* ParticlesModifier.swift in Sources */,
 				2F5E1DED28106EB00021DF02 /* AspectVGrid.swift in Sources */,
 				2F132CCB280B3656005DD9BE /* MemoryGame.swift in Sources */,
 				2F132CCD280B3737005DD9BE /* MemoryGameModelView.swift in Sources */,

@@ -32,7 +32,7 @@ class MemoryGameModelView: ObservableObject{
     func getNumberOfCardsDifficulyBased(level: Int) -> Int {
         if level > 0 && level <= 3 {
             return 9
-        } else if level > 3 && level <= 5 {
+        } else if level > 3 && level <= 7 {
             return 16
         } else if level > 5 && level <= 7 {
             return 25
@@ -50,18 +50,18 @@ class MemoryGameModelView: ObservableObject{
     func getNumberOfCardsToMemorizeDifficultyBased(level: Int) -> Int {
         if level > 0 && level <= 2 {
             return 3
-        } else if level > 2 && level <= 4 {
-            return 6
+        } else if level == 3 {
+            return 4
+        } else if level == 4 {
+            return 5
+        } else if level == 5 {
+            return 7
         } else if level > 4 && level <= 6 {
             return 8
-        } else if level > 6 && level <= 8 {
+        } else if level > 5 && level <= 8 {
             return 10
-        } else if level > 8 && level <= 10 {
-            return 12
-        } else if level > 10 && level <= 12 {
-            return 15
         } else {
-            return 17
+            return 10
         }
     }
     
