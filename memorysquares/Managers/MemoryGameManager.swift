@@ -43,12 +43,7 @@ class MemoryGameManager: ObservableObject{
     
     func getNumberOfCardsDifficulyBased(level: Int) -> Int {
         if level > 0 && level <= 3 {
-            Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { (_) in
-                withAnimation(.easeIn(duration: 1.5)) {
-                    self.model.cards.shuffle()
-                }
-            }
-            return 16
+            return 9
         } else if level > 3 && level <= 7 {
             return 16
         } else if level > 5 && level <= 7 {
@@ -66,6 +61,8 @@ class MemoryGameManager: ObservableObject{
     
     func getNumberOfCardsToMemorizeDifficultyBased(level: Int) -> Int {
         if level > 0 && level <= 2 {
+            randomizeCardsWithDifferentSettings(delay: 2.0, animate: 1.0)
+//            oppositeCards(delay: 2.0, animate: 1.0)
             return 3
         } else if level == 3 {
             return 4
@@ -79,6 +76,38 @@ class MemoryGameManager: ObservableObject{
             return 10
         } else {
             return 10
+        }
+    }
+    
+    func shuffleCards(delay: TimeInterval, animate: Double) {
+        Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
+            withAnimation(.easeInOut(duration: animate)) {
+                self.model.cards.shuffle()
+            }
+        }
+    }
+    
+    func oppositeCards(delay: TimeInterval, animate: Double) {
+        Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
+            withAnimation(.easeInOut(duration: animate)) {
+                self.model.oppositeCards()
+            }
+        }
+    }
+    
+    func randomizeCardsWithRoundSettings(delay: TimeInterval, animate: Double) {
+        Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
+            withAnimation(.easeInOut(duration: animate)) {
+                self.model.randomizeCardsWithRoundSettings()
+            }
+        }
+    }
+    
+    func randomizeCardsWithDifferentSettings(delay: TimeInterval, animate: Double) {
+        Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
+            withAnimation(.easeInOut(duration: animate)) {
+                self.model.randomizeCardsWithDifferentSettings()
+            }
         }
     }
     
