@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject var modelView: MemoryGameModelView
+    @ObservedObject var soundManager: SoundManager
+    @ObservedObject var modelView: MemoryGameManager
+    
     @State var showGameView = false
     @State private var timerStart = 0.0
     @State private var timerEnd = 4.0
@@ -20,7 +22,9 @@ struct ContentView: View {
         NavigationView {
             VStack {
                 if modelView.isGameOver {
-                    gameOverView
+                    withAnimation(.easeInOut(duration: 2)) {
+                        gameOverView
+                    }
                 } else {
                     gameRoundView
                 }
@@ -33,7 +37,7 @@ struct ContentView: View {
                     if modelView.checkDidWinRound {
                         Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { (_) in
                             withAnimation {
-                                modelView.restartGame()
+                                modelView.nextRound()
                             }
                         }
                     }
@@ -54,7 +58,7 @@ struct ContentView: View {
                             }
                         }
                         .onAppear {
-                            SoundManager.instance.playSound(sound: .countdown)
+                            soundManager.play(sound: .countdown)
                         }
                         .padding()
                 }
@@ -135,22 +139,43 @@ struct ContentView: View {
             .foregroundColor(!modelView.isGameOver ? .white : .red)
             .minimumScaleFactor(0.5)
             .shadow(radius: 5)
+            .onAppear {
+                soundManager.play(sound: .backgroundmusic)
+            }
     }
     
     var gameOverView: some View {
-        Text("Game Over")
-            .font(.largeTitle)
-            .fontWeight(.heavy)
-            .foregroundColor(!modelView.isGameOver ? .white : .red)
-            .minimumScaleFactor(0.5)
-            .shadow(radius: 5)
+        VStack {
+            Text("Game Over")
+                .font(.largeTitle)
+                .fontWeight(.heavy)
+                .foregroundColor(!modelView.isGameOver ? .white : .red)
+                .minimumScaleFactor(0.5)
+                .shadow(radius: 5)
+            Spacer()
+            Button {
+                modelView.restartGame()
+                showTimer = true
+                timerStart = 0.0
+                showGameView = false
+            } label: {
+                Text("Play Again?")
+            }
+            .padding()
+            .tint(.green)
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.roundedRectangle(radius: 5))
+            .shadow(radius: 2)
+            .controlSize(.large)
+            .font(.title)
+        }
     }
       
     @ViewBuilder
     private func cardView(for card: Card) -> some View {
         if !modelView.checkDidWinRound && !modelView.isGameOver {
             if showGameView {
-                CardView(modelView: modelView, card: card)
+                CardView(soundManager: soundManager, modelView: modelView, card: card)
                     .padding(4)
             } else {
                 ChosenCardView(card: card)
@@ -166,13 +191,14 @@ struct ContentView: View {
                     }
             }
         } else if modelView.checkDidWinRound {
-            CardView(modelView: modelView, card: card)
+            CardView(soundManager: soundManager, modelView: modelView, card: card)
                 .padding(4)
             .onAppear {
+                modelView.readyForNextRound = true
+                
                 Timer.scheduledTimer(withTimeInterval: 2, repeats: false) { (_) in
                     withAnimation {
                         self.showGameView = false
-                        modelView.readyForNextRound = true
                     }
                 }
             }
@@ -183,6 +209,12 @@ struct ContentView: View {
 // Our preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(modelView: MemoryGameModelView(totalSquares: 9, totalChosenSquares: 4))
+        ContentView(
+            soundManager: SoundManager(),
+            modelView: MemoryGameManager(
+                totalSquares: 16,
+                totalChosenSquares: 6
+            )
+        )
     }
 }

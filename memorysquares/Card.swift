@@ -12,5 +12,6 @@ struct Card: Identifiable {
     var id: Int
     var isMatched: Bool = false
     var isChosen: Bool = false
+    var hasBeenPressed: Bool = false
     var hasBeenChosenAndPressed: Bool = false
 }

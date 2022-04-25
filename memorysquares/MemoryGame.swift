@@ -11,10 +11,10 @@ import AVFoundation
 
 struct MemoryGame: View {
     var cards: [Card] = []
+    var randomChosenIndexes: [Int] = []
     var numberOfCards: Int
     var numberOfCardsToMemorize: Int
-    var numberOfCardsChosen: Int = 0
-    var randomChosenIndexes: [Int] = []
+    var numberOfCardsCorrectlyChosen: Int = 0
     var numberOfLives: Int = 3
     
     init(numberOfCards: Int, numberOfCardsToMemorize: Int) {
@@ -31,40 +31,37 @@ struct MemoryGame: View {
         }
     }
     
-    mutating func resetVariables() {
-        self.randomChosenIndexes.removeAll()
-        self.numberOfCardsChosen = 0
-    }
-    
     // check if the game is over
     // then check if the card tapped by user is a chosen square
     // then check if the user has already tapped the chosen square to not count towards the game count
+    // toggle the card isMatched property to true
+    // increment number of cards correctly chosen
+    // find the carrd in the array based on the index and change property that it was correctly chosed and has been pressed to true
     // changing cards should only happen here, and not directly change the cards array from struct
+    //TODO: Add more of the game logic here
+    //TODO: Add view modifiers, sounds, and animations to the CardView on tapped gestures
     mutating func chooseCard(card: Card) {
         if !isGameOver() {
-            if let chosenIndex = cards.firstIndex(where: { cardInTheArray in cardInTheArray.id == card.id }), cards[chosenIndex].isChosen {
-                if !cards[chosenIndex].hasBeenChosenAndPressed {
-                    toggleCardMatch(card: card)
-                    numberOfCardsChosen += 1
-                    cards[chosenIndex].hasBeenChosenAndPressed = true
-                    
-                    // correct sound
-                    
+            let chosenIndex = cards.firstIndex(where: { cardInTheArray in cardInTheArray.id == card.id })
+            
+            if cards[chosenIndex!].isChosen {
+                if !cards[chosenIndex!].hasBeenChosenAndPressed {
+                    cards[chosenIndex!].isMatched = true
+                    cards[chosenIndex!].hasBeenChosenAndPressed = true
+                    numberOfCardsCorrectlyChosen += 1
                 }
             } else {
-                numberOfLives -= 1
+                if !cards[chosenIndex!].hasBeenPressed {
+                    cards[chosenIndex!].hasBeenPressed = true
+                    numberOfLives -= 1
+                }
             }
         } else {
-            print("Game is over.")
+            print("dont do anything")
         }
     }
     
-    mutating func toggleCardMatch(card: Card) {
-        if let chosenIndex = cards.firstIndex(where: { aCardInTheCardsArray in aCardInTheCardsArray.id == card.id }) {
-            cards[chosenIndex].isMatched = true
-        }
-    }
-    
+    // game is over when the number of lives equals zero
     func isGameOver() -> Bool {
         if numberOfLives == 0 {
             return true
@@ -73,14 +70,16 @@ struct MemoryGame: View {
         return false
     }
     
+    // won the round if the number of cards correctly chosen is equal to the number needed to memorize that round
     func checkDidWinRound() -> Bool {
-        if numberOfCardsChosen == numberOfCardsToMemorize {
+        if numberOfCardsCorrectlyChosen == numberOfCardsToMemorize {
             return true
         }
         
         return false
     }
     
+    // get a unique number of indexes so they can be chosen as the ones to memorize for a round
     func getUniqueRandomIndexes(max: Int, count: Int) -> [Int] {
         var set = Set<Int>()
         
@@ -91,13 +90,13 @@ struct MemoryGame: View {
         return Array(set)
     }
     
+    // get number of lives for current round
     func getNumberOfLives() -> Int {
         return numberOfLives
     }
     
     var body: some View {
         ZStack {
-            
             RoundedRectangle(cornerRadius: 10)
                 .foregroundColor(.blue)
             RoundedRectangle(cornerRadius: 10)

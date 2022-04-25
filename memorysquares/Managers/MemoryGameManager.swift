@@ -8,21 +8,33 @@
 import Foundation
 import SwiftUI
 
-class MemoryGameModelView: ObservableObject{
+class MemoryGameManager: ObservableObject{
     @Published private var model: MemoryGame
     @Published var round: Int = 0
     @Published var readyForNextRound: Bool = false
     @Published var difficultyLevel: Int = 0
     
     init(totalSquares: Int, totalChosenSquares: Int) {
-        model = MemoryGame(numberOfCards: 9, numberOfCardsToMemorize: 3)
+        model = MemoryGame(
+            numberOfCards: 9,
+            numberOfCardsToMemorize: 3
+        )
     }
     
     func restartGame() {
         readyForNextRound = false
+        round = 1
+        difficultyLevel = 1
+        model = MemoryGame(
+            numberOfCards: getNumberOfCardsDifficulyBased(level: difficultyLevel),
+            numberOfCardsToMemorize: getNumberOfCardsToMemorizeDifficultyBased(level: difficultyLevel)
+        )
+    }
+    
+    func nextRound() {
+        readyForNextRound = false
         round += 1
         difficultyLevel += 1
-        print(difficultyLevel)
         model = MemoryGame(
             numberOfCards: getNumberOfCardsDifficulyBased(level: difficultyLevel),
             numberOfCardsToMemorize: getNumberOfCardsToMemorizeDifficultyBased(level: difficultyLevel)
@@ -31,7 +43,12 @@ class MemoryGameModelView: ObservableObject{
     
     func getNumberOfCardsDifficulyBased(level: Int) -> Int {
         if level > 0 && level <= 3 {
-            return 9
+            Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { (_) in
+                withAnimation(.easeIn(duration: 1.5)) {
+                    self.model.cards.shuffle()
+                }
+            }
+            return 16
         } else if level > 3 && level <= 7 {
             return 16
         } else if level > 5 && level <= 7 {
@@ -79,10 +96,6 @@ class MemoryGameModelView: ObservableObject{
     
     var isGameOver: Bool {
         model.isGameOver()
-    }
-    
-    func toggleMatchedCard(card: Card) {
-        model.toggleCardMatch(card: card)
     }
 
     //MARK: - Intents

@@ -8,33 +8,10 @@
 import SwiftUI
 import AVFoundation
 
-class SoundManager {
-    static let instance = SoundManager()
-    
-    var player: AVAudioPlayer?
-    
-    enum SoundOption: String {
-        case wrongsquare
-        case roundwin
-        case countdown
-    }
-    
-    func playSound(sound: SoundOption) {
-        
-        guard let url = Bundle.main.url(forResource: sound.rawValue, withExtension: ".wav") else { return }
-        
-        do {
-            player = try AVAudioPlayer(contentsOf: url)
-            player?.volume = 0.1
-            player?.play()
-        } catch let error {
-            print("Error playing sound. \(error.localizedDescription)")
-        }
-    }
-}
-
 struct CardView: View {
-    @ObservedObject var modelView: MemoryGameModelView
+    @ObservedObject var soundManager: SoundManager
+    @ObservedObject var modelView: MemoryGameManager
+    
     @State var numberOfShakes: CGFloat = 0
     
     var card: Card
@@ -42,39 +19,38 @@ struct CardView: View {
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                let shape = RoundedRectangle(cornerRadius: DrawingConstraints.cornerRadius)
-                
-                if !card.isMatched {
-                    shape.fill(.blue)
+                if !card.isMatched && card.hasBeenPressed {
+                    CardShape(color: .blue.opacity(0.5), radius: 5)
+                } else if !card.isMatched {
+                    CardShape(color: .blue)
                         .onTapGesture {
-                            withAnimation(.easeIn(duration: 0.2)) {
-                                self.modelView.choose(card: card)
+                            if modelView.readyForNextRound == false {
+                                withAnimation(.easeIn(duration: 0.2)) {
+                                    self.modelView.choose(card: card)
 
-                                if !card.isChosen {
-                                    numberOfShakes = 5
-                                    SoundManager.instance.playSound(sound: .wrongsquare)
+                                    if !card.isChosen {
+                                        numberOfShakes = 5
+                                        soundManager.play(sound: .wrongsquare)
+                                    }
                                 }
-                            }
-                            
-                            if modelView.checkDidWinRound {
-                                SoundManager.instance.playSound(sound: .roundwin)
-                            }
+                                
+                                if modelView.checkDidWinRound {
+                                    soundManager.play(sound: .roundwin)
+                                }
 
-                            numberOfShakes = 0
+                                numberOfShakes = 0
+                            } else {
+                                print("ready for next round, so can't press the buttonss")
+                            }
                         }
                         .modifier(ShakeEffect(shakeNumber: numberOfShakes))
                 } else {
-                    // make this happen when is matched but hadn't been pressed yet for just that square
-                    shape.fill(.white)
+                    CardShape(color: .white, radius: 5)
                     Circle().fill(.green)
                         .modifier(ParticlesModifier())
                 }
             }
         }
-    }
-    
-    private struct DrawingConstraints {
-        static let cornerRadius: CGFloat = 10
     }
 }
 
@@ -84,35 +60,33 @@ struct ChosenCardView: View {
     var body: some View {
         ZStack {
             if card.isChosen {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.white)
+                CardShape(color: .white, radius: 5)
             } else {
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(.blue)
+                CardShape(color: .blue, radius: 5)
             }
         }
     }
 }
 
-struct ShakeEffect: AnimatableModifier {
-    var shakeNumber: CGFloat = 0
-
-    var animatableData: CGFloat {
-        get {
-            shakeNumber
-        } set {
-            shakeNumber = newValue
-        }
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .offset(x: sin(shakeNumber * .pi * 2) * 10)
+struct CardShape: View {
+    var color: Color
+    var radius: CGFloat = 0
+    
+    var body: some View {
+        RoundedRectangle(cornerRadius: 10)
+            .fill(color)
+            .shadow(radius: radius)
     }
 }
 
 struct CardView_Previews: PreviewProvider {
     static var previews: some View {
-        CardView(modelView: MemoryGameModelView(totalSquares: 9, totalChosenSquares: 4), card: Card(id: 100))
+        CardView(
+            soundManager: SoundManager(),
+            modelView: MemoryGameManager(
+                totalSquares: 9,
+                totalChosenSquares: 4
+            ),
+            card: Card(id: 100))
     }
 }
