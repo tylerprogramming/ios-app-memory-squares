@@ -31,6 +31,47 @@ struct MemoryGame: View {
         }
     }
     
+    mutating func randomizeCardsWithRoundSettings() {
+        randomChosenIndexes = getUniqueRandomIndexes(max: numberOfCards, count: numberOfCardsToMemorize)
+    
+        for index in 0..<numberOfCards {
+            if randomChosenIndexes.contains(index) {
+                if !cards[index].isChosen {
+                    cards[index].isChosen = true
+                }
+            } else {
+                cards[index].isChosen = false
+            }
+        }
+    }
+    
+    mutating func randomizeCardsWithDifferentSettings() {
+        let randomNumberOfCardsToMemorize = numberOfCardsToMemorize + Int.random(in: 1..<numberOfCardsToMemorize)
+        
+        numberOfCardsToMemorize = randomNumberOfCardsToMemorize
+        randomChosenIndexes = getUniqueRandomIndexes(max: numberOfCards, count: randomNumberOfCardsToMemorize)
+        
+        for index in 0..<numberOfCards {
+            if randomChosenIndexes.contains(index) {
+                if !cards[index].isChosen {
+                    cards[index].isChosen = true
+                }
+            } else {
+                cards[index].isChosen = false
+            }
+        }
+    }
+    
+    mutating func oppositeCards() {
+        for index in 0..<self.numberOfCards {
+            if !cards[index].isChosen {
+                cards[index].isChosen = true
+            } else {
+                cards[index].isChosen = false
+            }
+        }
+    }
+    
     // check if the game is over
     // then check if the card tapped by user is a chosen square
     // then check if the user has already tapped the chosen square to not count towards the game count
@@ -88,6 +129,17 @@ struct MemoryGame: View {
         }
         
         return Array(set)
+    }
+    
+    // randomize the cards again
+    mutating func randomizeCards() {
+        for index in 0..<self.numberOfCards {
+            if !cards[index].isChosen {
+                cards[index].isChosen = true
+            } else {
+                cards[index].isChosen = false
+            }
+        }
     }
     
     // get number of lives for current round
