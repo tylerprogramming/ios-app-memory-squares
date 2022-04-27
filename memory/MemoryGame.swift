@@ -63,13 +63,18 @@ struct MemoryGame: View {
     }
     
     mutating func oppositeCards() {
+        var newNumberOfCards = 0
+        
         for index in 0..<self.numberOfCards {
             if !cards[index].isChosen {
                 cards[index].isChosen = true
+                newNumberOfCards += 1
             } else {
                 cards[index].isChosen = false
             }
         }
+        
+        self.numberOfCards = newNumberOfCards
     }
     
     // check if the game is over

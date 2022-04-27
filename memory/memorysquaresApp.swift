@@ -11,7 +11,7 @@ import SwiftUI
 struct memorysquaresApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(
+            GameView(
                 soundManager: SoundManager(),
                 modelView: MemoryGameManager(
                     totalSquares: 9, totalChosenSquares: 4

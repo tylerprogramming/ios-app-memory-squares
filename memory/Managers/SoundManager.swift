@@ -13,6 +13,7 @@ class SoundManager: ObservableObject {
     
     enum SoundOption: String {
         case wrongsquare
+        case correctsquare
         case roundwin
         case countdown
         case backgroundmusic
@@ -31,6 +32,13 @@ class SoundManager: ObservableObject {
         
         do {
             let player = try AVAudioPlayer(contentsOf: url)
+            print(player)
+            
+            if isMp3(soundExtension: soundExtension) {
+                player.volume = 0.1
+            } else {
+                player.volume = 0.5
+            }
             
             if soundPlayers.contains(player) {
                 if player.isPlaying == false {
@@ -47,5 +55,17 @@ class SoundManager: ObservableObject {
         } catch let error {
             print("Error playing sound. \(error.localizedDescription)")
         }
+    }
+    
+    func isMp3(soundExtension: String) -> Bool {
+        if soundExtension == ".mp3" {
+            return true
+        }
+        
+        return false
+    }
+    
+    func removeSounds() {
+        soundPlayers.removeAll()
     }
 }

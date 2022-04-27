@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct GameView: View {
     @ObservedObject var soundManager: SoundManager
     @ObservedObject var modelView: MemoryGameManager
     
+    @State var readyToStartGame = false
     @State var showGameView = false
     @State private var timerStart = 0.0
     @State private var timerEnd = 4.0
@@ -19,6 +20,20 @@ struct ContentView: View {
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
     var body: some View {
+        ZStack {
+            if readyToStartGame {
+                withAnimation(.easeInOut(duration: 2)) {
+                    main
+                }
+            } else {
+                withAnimation(.easeInOut(duration: 2)) {
+                    startButton
+                }
+            }
+        }
+    }
+    
+    var main: some View {
         NavigationView {
             VStack {
                 if modelView.isGameOver {
@@ -61,6 +76,10 @@ struct ContentView: View {
                             soundManager.play(sound: .countdown)
                         }
                         .padding()
+                } else {
+                    // this is here to keep the space so the cards don't re-order themselves
+                    ProgressView("")
+                        .opacity(0.0)
                 }
                 
                 Spacer()
@@ -78,6 +97,21 @@ struct ContentView: View {
             }
         }
         .ignoresSafeArea()
+    }
+    
+    var startButton: some View {
+        Button {
+            modelView.startGame()
+            readyToStartGame = true
+        } label: {
+            Image(systemName: "play.circle")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(minWidth: 100, idealWidth: 150, maxWidth: 200, minHeight: 100, idealHeight: 150, maxHeight: 200, alignment: .center)
+                .foregroundColor(.green)
+                .shadow(radius: 10)
+                .padding(20)
+        }
     }
     
     var livesView: some View {
@@ -155,6 +189,7 @@ struct ContentView: View {
             Spacer()
             Button {
                 modelView.restartGame()
+                soundManager.removeSounds()
                 showTimer = true
                 timerStart = 0.0
                 showGameView = false
@@ -209,7 +244,7 @@ struct ContentView: View {
 // Our preview
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(
+        GameView(
             soundManager: SoundManager(),
             modelView: MemoryGameManager(
                 totalSquares: 16,
