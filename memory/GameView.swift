@@ -10,25 +10,44 @@ import SwiftUI
 struct GameView: View {
     @ObservedObject var soundManager: SoundManager
     @ObservedObject var modelView: MemoryGameManager
-    
+
     @State var readyToStartGame = false
     @State var showGameView = false
     @State private var timerStart = 0.0
     @State private var timerEnd = 4.0
     @State private var showTimer: Bool = false
+    @State private var pulse: Bool = false
+    @State private var isRotated: Bool = false
+    @State private var animateGradient = false
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
+    private func pulsateButton() {
+        withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
+            pulse.toggle()
+        }
+    }
+    
     var body: some View {
         ZStack {
+            LinearGradient(
+                colors: [.green.opacity(0.3), .white.opacity(0.3)],
+                startPoint: animateGradient ? .topLeading : .bottomLeading,
+                endPoint: animateGradient ? .bottomTrailing : .topTrailing
+            )
+                .hueRotation(.degrees(animateGradient ? 60 : 0))
+                .ignoresSafeArea()
+                .onAppear {
+                    withAnimation(.easeInOut(duration: 5.0).repeatForever(autoreverses: true)) {
+                        animateGradient.toggle()
+                    }
+                }
             if readyToStartGame {
                 withAnimation(.easeInOut(duration: 2)) {
                     main
                 }
             } else {
-                withAnimation(.easeInOut(duration: 2)) {
-                    startButton
-                }
+                startButton
             }
         }
     }
@@ -77,7 +96,7 @@ struct GameView: View {
                         }
                         .padding()
                 } else {
-                    // this is here to keep the space so the cards don't re-order themselves
+                    // this is here to keep the space so the cards don't re-order themselves on certain number of squares in play
                     ProgressView("")
                         .opacity(0.0)
                 }
@@ -100,17 +119,62 @@ struct GameView: View {
     }
     
     var startButton: some View {
-        Button {
-            modelView.startGame()
-            readyToStartGame = true
-        } label: {
-            Image(systemName: "play.circle")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(minWidth: 100, idealWidth: 150, maxWidth: 200, minHeight: 100, idealHeight: 150, maxHeight: 200, alignment: .center)
-                .foregroundColor(.green)
-                .shadow(radius: 10)
-                .padding(20)
+        VStack {
+            HStack {
+                withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true).speed(0.5)) {
+                    Image(systemName: "brain.head.profile")
+                        .foregroundColor(.green)
+                        .font(.system(size: 70))
+                        .frame(width: 50, height: 150)
+                        .shadow(radius: 25)
+                        .padding()
+                }
+                Text("MEMORY SQUARES")
+                    .font(.system(size: 55))
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .shadow(radius: 25)
+            }
+            .padding()
+            Button {
+                modelView.startGame()
+                readyToStartGame = true
+            } label: {
+                ZStack {
+                    withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: false).speed(0.5)) {
+                        Circle()
+                            .stroke(lineWidth: 40)
+                            .frame(width: 200, height: 200)
+                            .foregroundColor(.green)
+                            .scaleEffect(pulse ? 1.5 : 1)
+                            .opacity(pulse ? 0 : 1)
+                            .padding()
+                            .onAppear {
+                                pulse.toggle()
+                            }
+                    }
+                    Circle()
+                        .frame(width: 200, height: 200)
+                        .foregroundColor(.green)
+                        .shadow(radius: 25)
+                    Circle()
+                        .stroke(style: StrokeStyle(lineWidth: 10, dash: [5]))
+                        .frame(width: 190, height: 190)
+                        .foregroundColor(.white)
+                        .rotationEffect(.degrees(isRotated ? 360 : 0))
+                    Image(systemName: "play.circle")
+                        .font(.system(size: 180))
+                        .foregroundColor(.white)
+                        .shadow(radius: 25)
+                        .padding(20)
+                }
+            }
+            .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulse)
+            .onAppear {
+                withAnimation(.linear(duration: 5.0).repeatForever(autoreverses: false)) {
+                    isRotated.toggle()
+                }
+            }
         }
     }
     
