@@ -121,14 +121,12 @@ struct GameView: View {
     var startButton: some View {
         VStack {
             HStack {
-                withAnimation(.easeInOut(duration: 1).repeatForever(autoreverses: true).speed(0.5)) {
-                    Image(systemName: "brain.head.profile")
-                        .foregroundColor(.green)
-                        .font(.system(size: 70))
-                        .frame(width: 50, height: 150)
-                        .shadow(radius: 25)
-                        .padding()
-                }
+                Image(systemName: "brain.head.profile")
+                    .foregroundColor(.green)
+                    .font(.system(size: 70))
+                    .frame(width: 50, height: 150)
+                    .shadow(radius: 25)
+                    .padding()
                 Text("MEMORY SQUARES")
                     .font(.system(size: 55))
                     .fontWeight(.bold)
@@ -136,6 +134,7 @@ struct GameView: View {
                     .shadow(radius: 25)
             }
             .padding()
+            
             Button {
                 modelView.startGame()
                 readyToStartGame = true
