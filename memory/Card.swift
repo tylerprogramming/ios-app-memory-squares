@@ -14,4 +14,5 @@ struct Card: Identifiable {
     var isChosen: Bool = false
     var hasBeenPressed: Bool = false
     var hasBeenChosenAndPressed: Bool = false
+    var color: Color = .blue
 }
