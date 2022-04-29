@@ -121,15 +121,25 @@ class MemoryGameManager: ObservableObject{
     }
     
     func blackout(delay: TimeInterval, animate: Double) {
+        var originalCards: [Card] = []
+        
         Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { _ in
             withAnimation(.easeInOut(duration: animate)) {
-                self.model.blackout()
+                originalCards = self.model.blackout()
+            }
+        }
+        
+        Timer.scheduledTimer(withTimeInterval: 4.4, repeats: false) { _ in
+            withAnimation(.easeInOut(duration: animate)) {
+                for index in 0..<self.model.cards.count {
+                    self.model.cards[index].color = originalCards[index].color
+                }
             }
         }
     }
     
     func changeSingleSquareColor(delay: TimeInterval, animate: Double) {
-        let delayChange = 0.50
+        let delayChange = 0.25
         let index = model.getUniqueRandomIndexes(max: 9, count: 1)
         var original: Color = .blue
         

@@ -32,10 +32,14 @@ struct MemoryGame: View {
         }
     }
     
-    mutating func blackout() {
+    mutating func blackout() -> [Card] {
+        let originalCardColors = cards
+        
         for index in 0..<numberOfCards {
             cards[index].color = .black
         }
+        
+        return originalCardColors
     }
     
     mutating func quickChangeCardColors() -> [Card] {
@@ -81,9 +85,11 @@ struct MemoryGame: View {
             if randomChosenIndexes.contains(index) {
                 if !cards[index].isChosen {
                     cards[index].isChosen = true
+                    cards[index].color = .white
                 }
             } else {
                 cards[index].isChosen = false
+                cards[index].color = .blue
             }
         }
     }
@@ -94,9 +100,11 @@ struct MemoryGame: View {
         for index in 0..<self.numberOfCards {
             if !cards[index].isChosen {
                 cards[index].isChosen = true
+                cards[index].color = .white
                 newNumberOfCards += 1
             } else {
                 cards[index].isChosen = false
+                cards[index].color = .blue
             }
         }
         

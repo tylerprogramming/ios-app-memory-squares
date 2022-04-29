@@ -19,6 +19,7 @@ struct GameView: View {
     @State private var pulse: Bool = false
     @State private var isRotated: Bool = false
     @State private var animateGradient = false
+    @State private var showHelpSheet = false
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
@@ -49,6 +50,9 @@ struct GameView: View {
             } else {
                 startButton
             }
+        }
+        .sheet(isPresented: $showHelpSheet) {
+            HelpView()
         }
     }
     
@@ -173,6 +177,21 @@ struct GameView: View {
                 withAnimation(.linear(duration: 5.0).repeatForever(autoreverses: false)) {
                     isRotated.toggle()
                 }
+            }
+            
+            Spacer()
+            
+            HStack(spacing: 10) {
+                Spacer()
+                
+                Button {
+                    showHelpSheet.toggle()
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .foregroundColor(.cyan)
+                        .font(.system(size: 40))
+                }
+                .padding(.trailing, 20)
             }
         }
     }
