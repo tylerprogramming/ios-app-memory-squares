@@ -80,12 +80,12 @@ struct GameView: View {
                 Spacer()
                 
                 if showTimer {
-                    ProgressView("", value: timerStart, total: 120)
+                    ProgressView("", value: timerStart, total: modelView.progressViewValue)
                         .scaleEffect(x: 1, y: 5, anchor: .bottom)
                         .onReceive(timer) { _ in
                             withAnimation(.easeInOut(duration: 2)) {
-                                if timerStart < 120 {
-                                    timerStart += 3
+                                if timerStart < modelView.progressViewValue {
+                                    timerStart += modelView.timerStartIncrement
                                 } else {
                                     showTimer = false
                                 }
@@ -281,7 +281,7 @@ struct GameView: View {
                     .onAppear {
                         showTimer = true
                         timerStart = 0.0
-                        Timer.scheduledTimer(withTimeInterval: timerEnd, repeats: false) { (_) in
+                        Timer.scheduledTimer(withTimeInterval: modelView.timerEnd, repeats: false) { (_) in
                             withAnimation {
                                 self.showGameView = true
                             }

@@ -20,10 +20,13 @@ struct CardView: View {
         ZStack {
             // if the card wasn't a chosen card and it was pressed, means it was incorrect
             if !card.isMatched && card.hasBeenPressed {
-                CardShape(color: .blue.opacity(0.5), radius: 5)
+                CardShape(color: card.color.opacity(0.5), radius: 5)
                 // if the card has not been pressed yet, so we need to check if user taps a chosen card (it matches)
             } else if !card.isMatched {
-                CardShape(color: .blue)
+                if card.isChosen && card.hasBeenPressed {
+                    CardShape(color: card.color)
+                } else {
+                    CardShape(color: .blue)
                     .onTapGesture {
                         // still in the current round, so the round isn't over yet
                         if modelView.readyForNextRound == false {
@@ -52,10 +55,15 @@ struct CardView: View {
                         }
                     }
                     .modifier(ShakeEffect(shakeNumber: numberOfShakes))
+                }
             } else {
-                CardShape(color: .white, radius: 5)
-                Circle().fill(.green)
-                    .modifier(ParticlesModifier())
+                if card.hasBeenPressed {
+                    CardShape(color: .blue, radius: 5)
+                } else {
+                    CardShape(color: card.color, radius: 5)
+                    Circle().fill(.green)
+                        .modifier(ParticlesModifier())
+                }
             }
         }
     }
@@ -67,9 +75,9 @@ struct ChosenCardView: View {
     var body: some View {
         ZStack {
             if card.isChosen {
-                CardShape(color: .white, radius: 5)
+                CardShape(color: card.color, radius: 5)
             } else {
-                CardShape(color: .blue, radius: 5)
+                CardShape(color: card.color, radius: 5)
             }
         }
         

@@ -16,6 +16,7 @@ struct MemoryGame: View {
     var numberOfCardsToMemorize: Int
     var numberOfCardsCorrectlyChosen: Int = 0
     var numberOfLives: Int = 3
+    var colors: [Color] = [.red, .yellow, .orange, .purple, .mint, .pink, .cyan, .green]
     
     init(numberOfCards: Int, numberOfCardsToMemorize: Int) {
         self.numberOfCards = numberOfCards
@@ -24,11 +25,34 @@ struct MemoryGame: View {
         
         for index in 0..<self.numberOfCards {
             if randomChosenIndexes.contains(index) {
-                cards.append(Card(id: index, isChosen: true))
+                cards.append(Card(id: index, isChosen: true, color: .white))
             } else {
                 cards.append(Card(id: index))
             }
         }
+    }
+    
+    mutating func blackout() {
+        for index in 0..<numberOfCards {
+            cards[index].color = .black
+        }
+    }
+    
+    mutating func quickChangeCardColors() -> [Card] {
+        let originalCardColors = cards
+        
+        for index in 0..<numberOfCards {
+            cards[index].color = colors[Int.random(in: 0..<colors.count)]
+        }
+        
+        return originalCardColors
+    }
+    
+    mutating func changeSingleSquareColor(index: Int) -> Color {
+        let currentColor = cards[index].color
+        cards[index].color = colors[Int.random(in: 0..<colors.count)]
+            
+        return currentColor
     }
     
     mutating func randomizeCardsWithRoundSettings() {
@@ -38,9 +62,11 @@ struct MemoryGame: View {
             if randomChosenIndexes.contains(index) {
                 if !cards[index].isChosen {
                     cards[index].isChosen = true
+                    cards[index].color = .white
                 }
             } else {
                 cards[index].isChosen = false
+                cards[index].color = .blue
             }
         }
     }

@@ -32,7 +32,6 @@ class SoundManager: ObservableObject {
         
         do {
             let player = try AVAudioPlayer(contentsOf: url)
-            print(player)
             
             if isMp3(soundExtension: soundExtension) {
                 player.volume = 0.1
