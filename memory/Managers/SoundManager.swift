@@ -17,6 +17,7 @@ class SoundManager: ObservableObject {
         case roundwin
         case countdown
         case backgroundmusic
+        case countdownonesecond
     }
     
     func play(sound: SoundOption) {

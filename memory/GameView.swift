@@ -20,6 +20,9 @@ struct GameView: View {
     @State private var isRotated: Bool = false
     @State private var animateGradient = false
     @State private var showHelpSheet = false
+    @State private var headerOpacity = 0.0
+    @State private var titleOffset = 200.0
+    @State private var progress = 0.0
     
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
@@ -48,7 +51,36 @@ struct GameView: View {
                     main
                 }
             } else {
-                startButton
+                VStack {
+                    HStack {
+                        Image(systemName: "brain.head.profile")
+                            .foregroundColor(.green)
+                            .font(.system(size: 70))
+                            .frame(width: 50, height: 150)
+                            .shadow(radius: 25)
+                            .padding()
+                            .opacity(headerOpacity)
+                            .onAppear {
+                                withAnimation(.interpolatingSpring(stiffness: 50, damping: 1)) {
+                                    headerOpacity += 1.0
+                                }
+                            }
+                        Text("MEMORY SQUARES")
+                            .font(.system(size: 55))
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .shadow(radius: 25)
+                            .offset(x: titleOffset, y: 0)
+                            .onAppear {
+                                withAnimation(.easeInOut(duration: 1.5)) {
+                                    titleOffset = 0
+                                }
+                            }
+                    }
+                    .padding()
+                    
+                    startButton
+                }
             }
         }
         .sheet(isPresented: $showHelpSheet) {
@@ -96,7 +128,11 @@ struct GameView: View {
                             }
                         }
                         .onAppear {
-                            soundManager.play(sound: .countdown)
+                            if modelView.oneSecondMode {
+                                soundManager.play(sound: .countdownonesecond)
+                            } else {
+                                soundManager.play(sound: .countdown)
+                            }
                         }
                         .padding()
                 } else {
@@ -124,23 +160,8 @@ struct GameView: View {
     
     var startButton: some View {
         VStack {
-            HStack {
-                Image(systemName: "brain.head.profile")
-                    .foregroundColor(.green)
-                    .font(.system(size: 70))
-                    .frame(width: 50, height: 150)
-                    .shadow(radius: 25)
-                    .padding()
-                Text("MEMORY SQUARES")
-                    .font(.system(size: 55))
-                    .fontWeight(.bold)
-                    .foregroundColor(.white)
-                    .shadow(radius: 25)
-            }
-            .padding()
-            
             Button {
-                modelView.startGame()
+                modelView.startGame(timerIncrement: 2.5)
                 readyToStartGame = true
             } label: {
                 ZStack {
@@ -177,6 +198,39 @@ struct GameView: View {
                 withAnimation(.linear(duration: 5.0).repeatForever(autoreverses: false)) {
                     isRotated.toggle()
                 }
+            }
+            
+            Button {
+                modelView.startGame(timerIncrement: 10.0)
+                readyToStartGame = true
+                modelView.oneSecondMode = true
+            } label: {
+                ZStack {
+                    Circle()
+                        .stroke(lineWidth: 20.0)
+                        .opacity(0.3)
+                        .foregroundColor(.red)
+                        .shadow(radius: 25)
+                    Circle()
+                        .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
+                        .stroke(style: StrokeStyle(lineWidth: 20.0, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.red)
+                        .rotationEffect(Angle(degrees: 270.0))
+                        .onAppear {
+                            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: false)) {
+                                progress = 1.0
+                            }
+                        }
+                    Image(systemName: "01.circle.fill")
+                        .font(.system(size: 185))
+                        .foregroundColor(.red)
+                        .shadow(radius: 25)
+                    Image(systemName: "01.circle")
+                        .font(.system(size: 185))
+                        .foregroundColor(.white)
+                        
+                }
+                .padding()
             }
             
             Spacer()

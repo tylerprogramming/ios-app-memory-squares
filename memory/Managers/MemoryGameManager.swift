@@ -13,9 +13,10 @@ class MemoryGameManager: ObservableObject{
     @Published var round: Int = 0
     @Published var readyForNextRound: Bool = false
     @Published var difficultyLevel: Int = 0
-    @Published var progressViewValue: Double = 120
+    @Published var progressViewValue: Double = 100
     @Published var timerEnd: Double = 4.0
-    @Published var timerStartIncrement: Double = 3.0
+    @Published var timerStartIncrement: Double = 2.5
+    @Published var oneSecondMode: Bool = true
     
     init(totalSquares: Int, totalChosenSquares: Int) {
         model = MemoryGame(
@@ -24,10 +25,12 @@ class MemoryGameManager: ObservableObject{
         )
     }
     
-    func startGame() {
+    func startGame(timerIncrement: Double) {
+        oneSecondMode = false
         round = 1
         difficultyLevel = 1
-        timerEnd = (progressViewValue / timerStartIncrement) / 10
+        timerStartIncrement = timerIncrement
+        timerEnd = (progressViewValue / timerIncrement) / 10
     }
     
     func restartGame() {
@@ -70,50 +73,66 @@ class MemoryGameManager: ObservableObject{
         if level == 1 {
             return 3
         } else if level == 2 {
-            hideBoardWithDifferentColors(delay: 1.0, animate: 1.0)
-            randomizeCardsWithRoundSettings(delay: 2.0, animate: 1.0)
+            if !oneSecondMode {
+                hideBoardWithDifferentColors(delay: 1.0, animate: 1.0)
+                randomizeCardsWithRoundSettings(delay: 2.0, animate: 1.0)
+            }
             return 4
         } else if level == 3 {
             return 5
         } else if level == 4 {
-            changeSingleSquareColor(delay: 0.2, animate: 0.15)
-            changeSingleSquareColor(delay: 0.6, animate: 0.15)
-            changeSingleSquareColor(delay: 0.9, animate: 0.15)
-            changeSingleSquareColor(delay: 1.2, animate: 0.15)
-            changeSingleSquareColor(delay: 1.5, animate: 0.15)
-            changeSingleSquareColor(delay: 1.8, animate: 0.15)
-            changeSingleSquareColor(delay: 2.1, animate: 0.15)
-            changeSingleSquareColor(delay: 2.4, animate: 0.15)
-            changeSingleSquareColor(delay: 2.7, animate: 0.15)
+            if !oneSecondMode {
+                changeSingleSquareColor(delay: 0.2, animate: 0.15)
+                changeSingleSquareColor(delay: 0.6, animate: 0.15)
+                changeSingleSquareColor(delay: 0.9, animate: 0.15)
+                changeSingleSquareColor(delay: 1.2, animate: 0.15)
+                changeSingleSquareColor(delay: 1.5, animate: 0.15)
+                changeSingleSquareColor(delay: 1.8, animate: 0.15)
+                changeSingleSquareColor(delay: 2.1, animate: 0.15)
+                changeSingleSquareColor(delay: 2.4, animate: 0.15)
+                changeSingleSquareColor(delay: 2.7, animate: 0.15)
+            }
             return 6
         } else if level == 5 {
             return 6
         } else if level == 6 {
-            randomizeCardsWithRoundSettings(delay: 0.5, animate: 1.0)
-            randomizeCardsWithRoundSettings(delay: 2.0, animate: 1.0)
+            if !oneSecondMode {
+                randomizeCardsWithRoundSettings(delay: 0.5, animate: 1.0)
+                randomizeCardsWithRoundSettings(delay: 2.0, animate: 1.0)
+            }
             return 8
         } else if level == 7 {
             return 9
         } else if level == 8 {
-            shuffleCards(delay: 2.0, animate: 0.5)
+            if !oneSecondMode {
+                shuffleCards(delay: 2.0, animate: 0.5)
+            }
             return 10
         } else if level == 9 {
             return 11
         } else if level == 10 {
-            blackout(delay: 2.0, animate: 1.0)
+            if !oneSecondMode {
+                blackout(delay: 2.0, animate: 1.0)
+            }
             return 7
         } else if level > 10 && level <= 11 {
             return 12
         } else if level == 12 {
-            randomizeCardsWithDifferentSettings(delay: 1.0, animate: 0.5)
+            if !oneSecondMode {
+                randomizeCardsWithDifferentSettings(delay: 1.0, animate: 0.5)
+            }
             return 13
         } else if level == 13 {
-            oppositeCards(delay: 2.5, animate: 1.0)
+            if !oneSecondMode {
+                oppositeCards(delay: 2.5, animate: 1.0)
+            }
             return 10
         } else if level > 13 && level <= 15 {
             return 15
         } else if level > 15 && level <= 18 {
-            blackout(delay: 2.0, animate: 2.0)
+            if !oneSecondMode {
+                blackout(delay: 2.0, animate: 2.0)
+            }
             return 17
         } else {
             return 15
